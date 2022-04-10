@@ -1,107 +1,108 @@
 package services;
 
-import java.util.ArrayList;
 import entities.*;
+
+import java.util.ArrayList;
 
 public class Purchase {
 
-	private Integer id;
-	private ArrayList<Product> purchaseProducts;
-	private float purchaseTotal;
-	private Trainer trainer;
-	private boolean deleted;
-	private static int idCounter = 1;
+    private static int idCounter = 1;
+    private Integer id;
+    private ArrayList<Product> purchaseProducts;
+    private float purchaseTotal;
+    private Trainer trainer;
+    private boolean deleted;
 
-	public Purchase(ArrayList<Product> purchaseProducts, Trainer trainer) {
-		this.id = idCounter;
-		idCounter++;
-		this.purchaseProducts = purchaseProducts;
-		this.purchaseTotal = 0;
-		purchaseProducts.forEach(product -> {
-			purchaseTotal += product.getPrice() * product.getQuantity();
-		});
-		this.trainer = trainer;
-	}
+    public Purchase(ArrayList<Product> purchaseProducts, Trainer trainer) {
+        this.id = idCounter;
+        idCounter++;
+        this.purchaseProducts = purchaseProducts;
+        this.purchaseTotal = 0;
+        purchaseProducts.forEach(product -> {
+            purchaseTotal += product.getPrice() * product.getQuantity();
+        });
+        this.trainer = trainer;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public static void purchaseItem(ArrayList<Product> purchasedProducts, Item item, int quantity) {
+        if (quantity <= item.getInventory()) {
+            Item purchasedItem = new Item(item, quantity);
+            purchasedProducts.add(purchasedItem);
+            item.setInventory(item.getInventory() - quantity);
+        } else {
+            System.out.println("Quantidade inválida!");
+        }
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public static void purchaseService(ArrayList<Product> purchasedProducts, Service service, Pokemon pokemon) {
+        Service purchasedService = new Service(service, pokemon);
+        purchasedProducts.add(purchasedService);
+    }
 
-	public ArrayList<Product> getPurchaseProducts() {
-		return purchaseProducts;
-	}
+    public static void registerPurchase(ArrayList<Product> purchasedProducts, Trainer trainer) {
+        Purchase newPurchase = new Purchase(purchasedProducts, trainer);
+        Shop.getRegisteredPurchases().add(newPurchase);
+        trainer.getCompletedPurchases().add(newPurchase);
+    }
 
-	public void setPurchaseProducts(ArrayList<Product> purchaseProducts) {
-		this.purchaseProducts = purchaseProducts;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public float getPurchaseTotal() {
-		return purchaseTotal;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setPurchaseTotal(float purchaseTotal) {
-		this.purchaseTotal = purchaseTotal;
-	}
+    public ArrayList<Product> getPurchaseProducts() {
+        return purchaseProducts;
+    }
 
-	public Trainer getTrainer() {
-		return trainer;
-	}
+    public void setPurchaseProducts(ArrayList<Product> purchaseProducts) {
+        this.purchaseProducts = purchaseProducts;
+    }
 
-	public void setTrainer(Trainer trainer) {
-		this.trainer = trainer;
-	}
-	
-	public boolean isDeleted() {
-		return deleted;
-	}
+    public float getPurchaseTotal() {
+        return purchaseTotal;
+    }
 
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
+    public void setPurchaseTotal(float purchaseTotal) {
+        this.purchaseTotal = purchaseTotal;
+    }
 
-	public static void purchaseItem(ArrayList<Product> purchasedProducts, Item item, int quantity) {
-		if (quantity <= item.getInventory()) {
-			Item purchasedItem = new Item(item, quantity);
-			purchasedProducts.add(purchasedItem);
-			item.setInventory(item.getInventory() - quantity);
-		} else {
-			System.out.println("Quantidade inválida!");
-		}
-	}
-	
-	public static void purchaseService(ArrayList<Product> purchasedProducts, Service service, Pokemon pokemon) {
-		Service purchasedService = new Service(service, pokemon);
-		purchasedProducts.add(purchasedService);
-	}
+    public Trainer getTrainer() {
+        return trainer;
+    }
 
-	public static void registerPurchase(ArrayList<Product> purchasedProducts, Trainer trainer) {
-		Purchase newPurchase = new Purchase(purchasedProducts, trainer);
-		Shop.getRegisteredPurchases().add(newPurchase);
-		trainer.getCompletedPurchases().add(newPurchase);
-	}
-	
-	public void deletePurchase() {
-		this.deleted = true;
-	}
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder productDetails = new StringBuilder();
-		purchaseProducts.forEach(product -> {
-			if (product instanceof Item) {
-				productDetails.append("[Item: " + product.getName() + " x " + product.getQuantity() + " = P$ "
-						+ String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
-			} else if (product instanceof Service) {
-				productDetails.append("[Serviço: " + product.getName() + " para " + (((Service) product).getPokemon().getNickname()) + " = P$ "
-						+ String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
-			}
-		});
-		return "\nCompra (" + id + ") " + "Treinador: " + trainer.getName() + "\n" + productDetails + "Total: P$ "
-				+ String.format("%.2f", purchaseTotal);
-	}
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void deletePurchase() {
+        this.deleted = true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder productDetails = new StringBuilder();
+        purchaseProducts.forEach(product -> {
+            if (product instanceof Item) {
+                productDetails.append("[Item: " + product.getName() + " x " + product.getQuantity() + " = P$ "
+                        + String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
+            } else if (product instanceof Service) {
+                productDetails.append("[Serviço: " + product.getName() + " para " + (((Service) product).getPokemon().getNickname()) + " = P$ "
+                        + String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
+            }
+        });
+        return "\nCompra (" + id + ") " + "Treinador: " + trainer.getName() + "\n" + productDetails + "Total: P$ "
+                + String.format("%.2f", purchaseTotal);
+    }
 
 }

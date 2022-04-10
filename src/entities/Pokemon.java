@@ -1,70 +1,78 @@
 package entities;
 
-import services.*;
-import java.util.ArrayList;
+import services.Shop;
 
-public class Pokemon extends Species {
-	
-	private Integer id;
-	private String nickname;
-	private Trainer trainer;
-	private boolean deleted = false;
-	private static int idCounter = 1;
-	
-	public Pokemon(Species species, String nickname, Trainer trainer) {
-		super(species.getPokedexNumber(), species.getName(), species.getType1(), species.getType2());
-		this.id = idCounter;
-		idCounter++;
-		Species.idCounter--;
-		this.nickname = nickname;
-		this.trainer = trainer;
-	}
+public class Pokemon{
 
-	public Integer getId() {
-		return id;
-	}
+    private static int counter = 1;
+    private Integer idPokemon;
+    private String nickname;
+    private Trainer trainer;
+    private Species specie;
+    private boolean deleted = false;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Pokemon(Species specie, String nickname, Trainer trainer) {
+        this.idPokemon = counter;
+        counter++;
+        Species.counter--;
+        this.nickname = nickname;
+        this.trainer = trainer;
+        this.specie = specie;
+    }
 
-	public String getNickname() {
-		return nickname;
-	}
+    public static void registerPokemon(Trainer trainer, Species specie, String nickname) {
+        Pokemon newPokemon = new Pokemon(specie, nickname, trainer);
+        Shop.getRegisteredPokemon().add(newPokemon);
+        trainer.getOwnedPokemon().add(newPokemon);
+    }
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
+    public Integer getId() {
+        return idPokemon;
+    }
 
-	public Trainer getTrainer() {
-		return trainer;
-	}
+    public void setId(Integer id) {
+        this.idPokemon = id;
+    }
 
-	public void setTrainer(Trainer trainer) {
-		this.trainer = trainer;
-	}
-	
-	public boolean isDeleted() {
-		return deleted;
-	}
+    public String getNickname() {
+        return nickname;
+    }
 
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-	public static void registerPokemon(Trainer trainer, Species species, String nickname) {
-		Pokemon newPokemon = new Pokemon(species, nickname, trainer);
-		Shop.getRegisteredPokemon().add(newPokemon);
-		trainer.getOwnedPokemon().add(newPokemon);
-	}
-	
-	public void deletePokemon() {
-		this.deleted = true;
-	}
-	
-	@Override
-	public String toString() {
-		return "Pokemon ("+ id +") [Apelido: " + nickname + ", Espécie: " + getName() + "(" + getType1() + "|" + getType2() + "), Treinador: " + trainer.getName() + "]";
-	}
-	
+    public Trainer getTrainer() {
+        return trainer;
+    }
+
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void deletePokemon() {
+        setDeleted(true);
+    }
+
+    public Species getSpecie() {
+        return specie;
+    }
+
+    public void setSpecie(Species specie) {
+        this.specie = specie;
+    }
+
+    @Override
+    public String toString() {
+        return "Pokemon (" + idPokemon + ") [Apelido: " + nickname + ", Espécie: " + this.specie.getName() + "(" + this.specie.getType1() + "|" + this.specie.getType2() + "), Treinador: " + trainer.getName() + "]";
+    }
+
 }
