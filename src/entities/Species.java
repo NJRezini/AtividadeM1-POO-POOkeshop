@@ -1,14 +1,13 @@
 package entities;
 
-import services.Shop;
-
 public class Species {
     protected static int counter = 1;
-    private Integer id;
+    private final Integer id;
     private Integer pokedexNumber;
     private String name;
     private String type1;
     private String type2;
+    private boolean deleted = false;
 
     public Species(int pokedexNumber, String name, String type1, String type2) {
         this.id = counter;
@@ -26,16 +25,6 @@ public class Species {
         this.name = name;
         this.type1 = type1.toUpperCase();
         this.type2 = "--";
-    }
-
-    public static void registerSpecies(int pokedexNumber, String name, String type1, String type2) {
-        Species specie = new Species(pokedexNumber, name, type1, type2);
-        Shop.getRegisteredSpecies().add(specie);
-    }
-
-    public static void registerSpecies(int pokedexNumber, String name, String type1) {
-        Species specie = new Species(pokedexNumber, name, type1);
-        Shop.getRegisteredSpecies().add(specie);
     }
 
     public int getPokedexNumber() {
@@ -68,6 +57,18 @@ public class Species {
 
     public void setType2(String type2) {
         this.type2 = type2;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    private void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void deleteSpecie() {
+        setDeleted(true);
     }
 
     @Override

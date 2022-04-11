@@ -1,8 +1,6 @@
 package entities;
 
-import services.Shop;
-
-public class Pokemon{
+public class Pokemon {
 
     private static int counter = 1;
     private Integer idPokemon;
@@ -14,16 +12,9 @@ public class Pokemon{
     public Pokemon(Species specie, String nickname, Trainer trainer) {
         this.idPokemon = counter;
         counter++;
-        Species.counter--;
         this.nickname = nickname;
         this.trainer = trainer;
         this.specie = specie;
-    }
-
-    public static void registerPokemon(Trainer trainer, Species specie, String nickname) {
-        Pokemon newPokemon = new Pokemon(specie, nickname, trainer);
-        Shop.getRegisteredPokemon().add(newPokemon);
-        trainer.getOwnedPokemon().add(newPokemon);
     }
 
     public Integer getId() {
@@ -72,7 +63,7 @@ public class Pokemon{
 
     @Override
     public String toString() {
-        return "Pokemon (" + idPokemon + ") [Apelido: " + nickname + ", Espécie: " + this.specie.getName() + "(" + this.specie.getType1() + "|" + this.specie.getType2() + "), Treinador: " + trainer.getName() + "]";
+        return "Pokemon (" + this.idPokemon + ") [Apelido: " + this.nickname + ", Espécie: " + this.getSpecie().getName() + "(" + this.getSpecie().getType1() + "|" + this.getSpecie().getType2() + "), Treinador: " + this.getTrainer().getName() + "]";
     }
 
 }

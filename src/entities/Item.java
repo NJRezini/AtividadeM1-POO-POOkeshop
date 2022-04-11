@@ -1,6 +1,6 @@
 package entities;
 
-import services.Shop;
+import org.jetbrains.annotations.NotNull;
 
 public class Item extends Product {
 
@@ -13,18 +13,13 @@ public class Item extends Product {
         this.inventory = inventory;
     }
 
-    public Item(Item item, int quantity) {
+    public Item(@NotNull Item item, int quantity) {
         super(item.getName(), item.getPrice(), item.getRarity());
         this.setQuantity(quantity);
     }
 
-    public static void registerItem(String name, float price, int rarity, int inventory) {
-        Item item = new Item(name, price, rarity, inventory);
-        Shop.getRegisteredItems().add(item);
-    }
-
     public int getInventory() {
-        return inventory;
+        return this.inventory;
     }
 
     public void setInventory(int inventory) {

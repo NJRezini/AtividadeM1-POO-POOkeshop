@@ -2,141 +2,44 @@ package services;
 
 import entities.*;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Shop {
 
-    private static ArrayList<Trainer> registeredTrainers = new ArrayList<>();
-    private static ArrayList<Pokemon> registeredPokemon = new ArrayList<>();
-    private static ArrayList<Species> registeredSpecies = new ArrayList<>();
-    private static ArrayList<Item> registeredItems = new ArrayList<>();
-    private static ArrayList<Service> registeredServices = new ArrayList<>();
-    private static ArrayList<Purchase> registeredPurchases = new ArrayList<>();
-    private static Scanner sc = new Scanner(System.in);
-
-    public static ArrayList<Trainer> getRegisteredTrainers() {
-        return registeredTrainers;
-    }
-
-    public static ArrayList<Pokemon> getRegisteredPokemon() {
-        return registeredPokemon;
-    }
-
-    public static ArrayList<Species> getRegisteredSpecies() {
-        return registeredSpecies;
-    }
-
-    public static ArrayList<Item> getRegisteredItems() {
-        return registeredItems;
-    }
-
-    public static ArrayList<Service> getRegisteredServices() {
-        return registeredServices;
-    }
-
-    public static ArrayList<Purchase> getRegisteredPurchases() {
-        return registeredPurchases;
-    }
-
-    public static void listSpecies() {
-        System.out.println();
-        registeredSpecies.forEach(species -> {
-            System.out.println(species);
-        });
-    }
-
-    public static void listTrainers() {
-        System.out.println();
-        registeredTrainers.forEach(trainer -> {
-            if (!trainer.isDeleted()) {
-                System.out.println(trainer);
-            }
-        });
-    }
-
-    public static void listPokemon() {
-        System.out.println();
-        registeredPokemon.forEach(pokemon -> {
-            if (!pokemon.isDeleted()) {
-                System.out.println(pokemon);
-            }
-        });
-    }
-
-    public static void listPokemon(int trainerId) {
-        System.out.println();
-        registeredPokemon.forEach(pokemon -> {
-            if (pokemon.getTrainer().getId() == trainerId && !pokemon.isDeleted()) {
-                System.out.println(pokemon);
-            }
-        });
-    }
-
-    public static void listItems() {
-        System.out.println();
-        registeredItems.forEach(item -> {
-            if (!item.isDeleted()) {
-                System.out.println(item);
-            }
-        });
-    }
-
-    public static void listServices() {
-        System.out.println();
-        registeredServices.forEach(service -> {
-            if (!service.isDeleted()) {
-                System.out.println(service);
-            }
-        });
-    }
-
-    public static void listPurchases() {
-        System.out.println();
-        registeredPurchases.forEach(purchase -> {
-            if (!purchase.isDeleted()) {
-                System.out.println(purchase);
-            }
-        });
-    }
-
-    public static void listPurchases(int trainerId) {
-        System.out.println();
-        registeredPurchases.forEach(purchase -> {
-            if (purchase.getTrainer().getId() == trainerId && !purchase.isDeleted()) {
-                System.out.println(purchase);
-            }
-        });
-    }
+    private static final PokemonCollection pokemonCollection = new PokemonCollection();
+    private static final SpeciesCollection speciesCollection = new SpeciesCollection();
+    private static final ItemsCollection itemCollection = new ItemsCollection();
+    private static final TrainerCollection trainerCollection = new TrainerCollection();
+    private static final ServiceCollection serviceCollection = new ServiceCollection();
+    private static final PurchaseCollection purchaseCollection = new PurchaseCollection();
+    private static final Scanner sc = new Scanner(System.in);
 
     public static void mainMenu() {
         int menu = -1;
         do {
             clearScreen();
-            System.out.println("MENU PRINCIPAL \n" + "Bem vindo à POOkeShop! O que você gostaria de fazer? \n\n"
-                    + "1. Fazer um pedido.\n" + "2. Cadastrar\n" + "3. Buscar\n" + "4. Deletar\n"
-                    + "0. Sair da POOkeShop.\n");
+            System.out.println("""
+                    MENU PRINCIPAL\s
+                    Bem vindo à POOkeShop! O que você gostaria de fazer?\s
+
+                    1. Fazer um pedido.
+                    2. Cadastrar
+                    3. Buscar
+                    4. Deletar
+                    0. Sair da POOkeShop.
+                    """);
 
             menu = sc.nextInt();
             sc.nextLine();
             clearScreen();
 
             switch (menu) {
-                case 1:
-                    purchaseMenu();
-                    break;
-                case 2:
-                    registrationMenu();
-                    break;
-                case 3:
-                    searchMenu();
-                    break;
-                case 4:
-                    removalMenu();
-                    break;
-                case 0:
-                    System.out.println("Até a próxima!");
-                    break;
+                case 1 -> purchaseMenu();
+                case 2 -> registrationMenu();
+                case 3 -> searchMenu();
+                case 4 -> removalMenu();
+                case 0 -> System.out.println("Até a próxima!");
             }
         } while (menu != 0);
         sc.close();
@@ -151,8 +54,13 @@ public class Shop {
         int menu = -1;
         do {
             clearScreen();
-            System.out.print("FAZER PEDIDO \n" + "O que você gostaria de adquirir? \n\n" + "1. Um item.\n"
-                    + "2. Um serviço para o meu pokémon.\n");
+            System.out.print("""
+                    FAZER PEDIDO\s
+                    O que você gostaria de adquirir?\s
+
+                    1. Um item.
+                    2. Um serviço para o meu pokémon.
+                    """);
             if (purchaseProducts.size() == 0) {
                 System.out.println("0. Voltar para o menu principal");
             } else {
@@ -163,71 +71,159 @@ public class Shop {
             clearScreen();
 
             switch (menu) {
-                case 1:
-                    listItems();
-                    System.out.print("\nID do item para comprar: ");
-                    int itemId = sc.nextInt();
-                    sc.nextLine();
-                    System.out.print("Quantidade desejada de " + registeredItems.get(itemId - 1).getName() + ": ");
-                    int quantity = sc.nextInt();
-                    sc.nextLine();
-                    Purchase.purchaseItem(purchaseProducts, registeredItems.get(itemId - 1), quantity);
-                    break;
-                case 2:
-                    listServices();
-                    System.out.print("ID do serviço para comprar: ");
-                    int serviceId = sc.nextInt();
-                    sc.nextLine();
-                    listPokemon(trainerId);
-                    System.out.print("ID do pokémon a utilizar " + registeredServices.get(serviceId - 1).getName() + ": ");
-                    int pokemonId = sc.nextInt();
-                    sc.nextLine();
-                    System.out.print("");
-                    Purchase.purchaseService(purchaseProducts, registeredServices.get(serviceId - 1),
-                            registeredPokemon.get(pokemonId - 1));
-                    break;
+                case 1 -> buyItem(purchaseProducts);
+                case 2 -> buyService(trainerId, purchaseProducts);
             }
+
         } while (menu != 0);
 
         if (purchaseProducts.size() > 0) {
-            Purchase.registerPurchase(purchaseProducts, registeredTrainers.get(trainerId - 1));
+            Trainer trainer = trainerCollection.getRegisteredTrainers().get(trainerId - 1);
+            purchaseCollection.registerPurchase(purchaseProducts, trainer);
         }
         clearScreen();
-        listPurchases();
+        purchaseCollection.listPurchases();
         pauseScreen();
     }
 
-    private static void registrationMenu() {
+    private static void searchMenu() {
+        int menu = -1;
+
+        do {
+            System.out.println("""
+                    BUSCA\s
+                    O que você gostaria de buscar?\s
+
+                    1. Espécies registradas.
+                    2. Pokémon registrados.
+                    3. Pokémon de um treinador.
+                    4. Treinadores registrados.
+                    5. Itens registrados.
+                    6. Serviços registrados.
+                    7. Uma compra de um treinador.
+                    8. Todas as compras.
+                    0. Voltar para o Menu Principal.
+                    """);
+            menu = sc.nextInt();
+            sc.nextLine();
+            clearScreen();
+
+            int trainerId;
+
+            switch (menu) {
+                case 1 -> speciesCollection.listSpecies();
+                case 2 -> pokemonCollection.listPokemon();
+                case 3 -> {
+                    trainerId = getTrainerId();
+                    trainerCollection.listPokemonOwnedByTrainer(trainerId);
+                }
+                case 4 -> trainerCollection.listTrainers();
+                case 5 -> itemCollection.listItems();
+                case 6 -> serviceCollection.listServices();
+                case 7 -> {
+                    trainerId = getTrainerId();
+                    purchaseCollection.listPurchases(trainerId);
+                }
+                case 8 -> purchaseCollection.listPurchases();
+            }
+            pauseScreen();
+            clearScreen();
+        } while (menu != 0);
+    }
+
+    private static void removalMenu() {
         int menu = -1;
         do {
-            System.out.println("CADASTRO \n" + "O que você gostaria de cadastrar? \n\n" + "1. Uma espécie.\n"
-                    + "2. Um treinador.\n" + "3. Um pokémon.\n" + "4. Um item.\n" + "5. Um serviço.\n"
-                    + "0. Voltar para o Menu Principal.\n");
+            System.out.println(
+                    """
+                            REMOVER\s
+                            O que você gostaria de remover?\s
+
+                            1. Um pokémon.
+                            2. Um treinador.
+                            3. Um item.
+                            4. Um serviço.
+                            0. Voltar para o Menu Principal.
+                            """);
             menu = sc.nextInt();
             sc.nextLine();
             clearScreen();
 
             switch (menu) {
-                case 1:
+                case 1 -> deletePokemon();
+                case 2 -> deleteTrainer();
+                case 3 -> deleteItem();
+                case 4 -> deleteService();
+                case 5 -> deletePurchase();
+            }
+            clearScreen();
+        } while (menu != 0);
+    }
+
+    private static void buyService(int trainerId, ArrayList<Product> purchaseProducts) {
+        serviceCollection.listServices();
+        System.out.print("ID do serviço para comprar: ");
+        int serviceId = sc.nextInt() - 1;
+        sc.nextLine();
+        trainerCollection.listPokemonOwnedByTrainer(trainerId);
+        System.out.print("ID do pokémon a utilizar " + serviceCollection.getRegisteredServices().get(serviceId).getName() + ": ");
+        int pokemonId = sc.nextInt() - 1;
+        sc.nextLine();
+        System.out.print("");
+        Purchase.purchaseService(purchaseProducts, serviceCollection.getRegisteredServices().get(serviceId),
+                pokemonCollection.getRegisteredPokemon().get(pokemonId));
+    }
+
+    private static void buyItem(ArrayList<Product> purchaseProducts) {
+        itemCollection.listItems();
+        System.out.print("\nID do item para comprar: ");
+        int itemId = sc.nextInt() - 1;
+        sc.nextLine();
+        System.out.print("Quantidade desejada de " + itemCollection.getRegisteredItems().get(itemId).getName() + ": ");
+        int quantity = sc.nextInt() - 1;
+        sc.nextLine();
+        Purchase.purchaseItem(purchaseProducts, itemCollection.getRegisteredItems().get(itemId), quantity);
+    }
+
+    private static void registrationMenu() {
+        int menu = -1;
+        do {
+            System.out.println("""
+                    CADASTRO\s
+                    O que você gostaria de cadastrar?\s
+
+                    1. Uma espécie.
+                    2. Um treinador.
+                    3. Um pokémon.
+                    4. Um item.
+                    5. Um serviço.
+                    0. Voltar para o Menu Principal.
+                    """);
+            menu = sc.nextInt();
+            sc.nextLine();
+            clearScreen();
+
+            switch (menu) {
+                case 1 -> {
                     speciesRegistration();
-                    listSpecies();
-                    break;
-                case 2:
+                    speciesCollection.listSpecies();
+                }
+                case 2 -> {
                     trainerRegistration();
-                    listTrainers();
-                    break;
-                case 3:
+                    trainerCollection.listTrainers();
+                }
+                case 3 -> {
                     pokemonRegistration();
-                    listPokemon();
-                    break;
-                case 4:
+                    pokemonCollection.listPokemon();
+                }
+                case 4 -> {
                     itemRegistration();
-                    listItems();
-                    break;
-                case 5:
+                    itemCollection.listItems();
+                }
+                case 5 -> {
                     serviceRegistration();
-                    listServices();
-                    break;
+                    serviceCollection.listServices();
+                }
             }
             pauseScreen();
             clearScreen();
@@ -247,10 +243,10 @@ public class Shop {
             System.out.print("Tipo 2: ");
             sc.nextLine();
             String type2 = sc.nextLine();
-            Species.registerSpecies(pokedex, name, type1, type2);
+            speciesCollection.registerSpecies(pokedex, name, type1, type2);
         } else {
             sc.nextLine();
-            Species.registerSpecies(pokedex, name, type1);
+            speciesCollection.registerSpecies(pokedex, name, type1);
         }
     }
 
@@ -260,21 +256,21 @@ public class Shop {
         System.out.print("Número de insígnias: ");
         int badges = sc.nextInt();
         sc.nextLine();
-        Trainer.registerTrainer(name, badges);
+        trainerCollection.registerTrainer(name, badges);
     }
 
     private static void pokemonRegistration() {
-        listTrainers();
+        trainerCollection.listTrainers();
         System.out.print("\nID de treinador: ");
-        int trainerId = sc.nextInt();
+        int trainerId = sc.nextInt() - 1;
         sc.nextLine();
-        listSpecies();
+        speciesCollection.listSpecies();
         System.out.print("\nID da espécie do pokemon: ");
-        int speciesId = sc.nextInt();
+        int speciesId = sc.nextInt() - 1;
         sc.nextLine();
         System.out.print("Apelido: ");
         String name = sc.nextLine();
-        Pokemon.registerPokemon(getRegisteredTrainers().get(trainerId - 1), getRegisteredSpecies().get(speciesId - 1),
+        pokemonCollection.registerPokemon(trainerCollection.getRegisteredTrainers().get(trainerId), speciesCollection.getRegisteredSpecies().get(speciesId),
                 name);
     }
 
@@ -290,7 +286,7 @@ public class Shop {
         System.out.print("Raridade: ");
         int rarity = sc.nextInt();
         sc.nextLine();
-        Item.registerItem(name, price, rarity, inventory);
+        itemCollection.registerItem(name, price, rarity, inventory);
     }
 
     public static void serviceRegistration() {
@@ -302,117 +298,59 @@ public class Shop {
         System.out.println("Raridade: ");
         int rarity = sc.nextInt();
         sc.nextLine();
-        Service.registerService(name, price, rarity);
+        serviceCollection.registerService(name, price, rarity);
     }
 
-    private static void searchMenu() {
-        int menu = -1;
-
-        do {
-            System.out.println("BUSCA \n" + "O que você gostaria de buscar? \n\n" + "1. Espécies registradas.\n"
-                    + "2. Pokémon registrados.\n" + "3. Pokémon de um treinador.\n" + "4. Treinadores registrados.\n"
-                    + "5. Itens registrados.\n" + "6. Serviços registrados.\n" + "7. Uma compra de um treinador.\n"
-                    + "8. Todas as compras.\n" + "0. Voltar para o Menu Principal.\n");
-            menu = sc.nextInt();
-            sc.nextLine();
-            clearScreen();
-
-            int trainerId;
-
-            switch (menu) {
-                case 1:
-                    listSpecies();
-                    break;
-                case 2:
-                    listPokemon();
-                    break;
-                case 3:
-                    System.out.print("ID do Treinador: ");
-                    trainerId = sc.nextInt();
-                    sc.nextLine();
-                    listPokemon(trainerId);
-                    break;
-                case 4:
-                    listTrainers();
-                    break;
-                case 5:
-                    listItems();
-                    break;
-                case 6:
-                    listServices();
-                    break;
-                case 7:
-                    System.out.print("ID do Treinador: ");
-                    trainerId = sc.nextInt();
-                    sc.nextLine();
-                    listPurchases(trainerId);
-                    break;
-                case 8:
-                    listPurchases();
-                    break;
-            }
-            pauseScreen();
-            clearScreen();
-        } while (menu != 0);
+    private static int getTrainerId() {
+        int trainerId;
+        System.out.print("ID do Treinador: ");
+        trainerId = sc.nextInt();
+        sc.nextLine();
+        return trainerId;
+    }
+    private static void deletePurchase() {
+        purchaseCollection.listPurchases();
+        System.out.print("ID do compra: ");
+        int purchaseId = sc.nextInt();
+        sc.nextLine();
+        purchaseCollection.deletePurchase(purchaseId);
     }
 
-    private static void removalMenu() {
-        int menu = -1;
-        do {
-            System.out.println(
-                    "REMOVER \n" + "O que você gostaria de remover? \n\n" + "1. Um pokémon.\n" + "2. Um treinador.\n"
-                            + "3. Um item.\n" + "4. Um serviço.\n" + "0. Voltar para o Menu Principal.\n");
-            menu = sc.nextInt();
-            sc.nextLine();
-            clearScreen();
+    private static void deleteService() {
+        serviceCollection.listServices();
+        System.out.print("ID do serviço: ");
+        int serviceId = sc.nextInt();
+        sc.nextLine();
+        serviceCollection.deleteService(serviceId);
+    }
 
-            switch (menu) {
-                case 1:
-                    listPokemon();
-                    System.out.print("ID do pokémon: ");
-                    int pokemonId = sc.nextInt();
-                    sc.nextLine();
-                    registeredPokemon.get(pokemonId - 1).deletePokemon();
-                    break;
-                case 2:
-                    listTrainers();
-                    System.out.print("ID do treinador: ");
-                    int trainerId = sc.nextInt();
-                    sc.nextLine();
-                    registeredTrainers.get(trainerId - 1).deleteTrainer();
-                    break;
-                case 3:
-                    listItems();
-                    System.out.print("ID do item: ");
-                    int itemId = sc.nextInt();
-                    sc.nextLine();
-                    registeredItems.get(itemId - 1).deleteProduct();
-                    break;
-                case 4:
-                    listServices();
-                    System.out.print("ID do serviço: ");
-                    int serviceId = sc.nextInt();
-                    sc.nextLine();
-                    registeredServices.get(serviceId - 1).deleteProduct();
-                    break;
-                case 5:
-                    listPurchases();
-                    System.out.print("ID do compra: ");
-                    int purchaseId = sc.nextInt();
-                    sc.nextLine();
-                    registeredPurchases.get(purchaseId - 1).deletePurchase();
-                    break;
-            }
-            clearScreen();
-        } while (menu != 0);
+    private static void deleteItem() {
+        itemCollection.listItems();
+        System.out.print("ID do item: ");
+        int itemId = sc.nextInt();
+        sc.nextLine();
+        itemCollection.deleteItem(itemId);
+    }
+
+    private static void deleteTrainer() {
+        trainerCollection.listTrainers();
+        System.out.print("ID do treinador: ");
+        int trainerId = sc.nextInt();
+        sc.nextLine();
+        trainerCollection.deleteTrainer(trainerId, Shop.purchaseCollection, Shop.pokemonCollection);
+    }
+
+    private static void deletePokemon() {
+        pokemonCollection.listPokemon();
+        System.out.print("ID do pokémon: ");
+        int pokemonId = sc.nextInt();
+        sc.nextLine();
+        pokemonCollection.deletePokemon(pokemonId);
     }
 
     public static void clearScreen() {
-        try {
-            Runtime.getRuntime().exec("cls");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     public static void pauseScreen() {

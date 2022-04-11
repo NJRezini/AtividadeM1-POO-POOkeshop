@@ -1,21 +1,22 @@
 package services;
 
 import entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class Purchase {
 
-    private static int idCounter = 1;
+    private static int counter = 1;
     private Integer id;
     private ArrayList<Product> purchaseProducts;
     private float purchaseTotal;
     private Trainer trainer;
     private boolean deleted;
 
-    public Purchase(ArrayList<Product> purchaseProducts, Trainer trainer) {
-        this.id = idCounter;
-        idCounter++;
+    public Purchase(@NotNull ArrayList<Product> purchaseProducts, Trainer trainer) {
+        this.id = counter;
+        counter++;
         this.purchaseProducts = purchaseProducts;
         this.purchaseTotal = 0;
         purchaseProducts.forEach(product -> {
@@ -24,7 +25,7 @@ public class Purchase {
         this.trainer = trainer;
     }
 
-    public static void purchaseItem(ArrayList<Product> purchasedProducts, Item item, int quantity) {
+    public static void purchaseItem(ArrayList<Product> purchasedProducts, @NotNull Item item, int quantity) {
         if (quantity <= item.getInventory()) {
             Item purchasedItem = new Item(item, quantity);
             purchasedProducts.add(purchasedItem);
@@ -34,15 +35,9 @@ public class Purchase {
         }
     }
 
-    public static void purchaseService(ArrayList<Product> purchasedProducts, Service service, Pokemon pokemon) {
+    public static void purchaseService(@NotNull ArrayList<Product> purchasedProducts, Service service, Pokemon pokemon) {
         Service purchasedService = new Service(service, pokemon);
         purchasedProducts.add(purchasedService);
-    }
-
-    public static void registerPurchase(ArrayList<Product> purchasedProducts, Trainer trainer) {
-        Purchase newPurchase = new Purchase(purchasedProducts, trainer);
-        Shop.getRegisteredPurchases().add(newPurchase);
-        trainer.getCompletedPurchases().add(newPurchase);
     }
 
     public Integer getId() {
@@ -86,7 +81,7 @@ public class Purchase {
     }
 
     public void deletePurchase() {
-        this.deleted = true;
+        setDeleted(true);
     }
 
     @Override
@@ -94,11 +89,13 @@ public class Purchase {
         StringBuilder productDetails = new StringBuilder();
         purchaseProducts.forEach(product -> {
             if (product instanceof Item) {
-                productDetails.append("[Item: " + product.getName() + " x " + product.getQuantity() + " = P$ "
-                        + String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
+                productDetails.append("[Item: ").append(product.getName()).append(" x ").append(product.getQuantity())
+                        .append(" = P$ ").append(String.format("%.2f", (product.getPrice() * product.getQuantity())))
+                        .append("]\n");
             } else if (product instanceof Service) {
-                productDetails.append("[Serviço: " + product.getName() + " para " + (((Service) product).getPokemon().getNickname()) + " = P$ "
-                        + String.format("%.2f", (product.getPrice() * product.getQuantity())) + "]\n");
+                productDetails.append("[Serviço: ").append(product.getName()).append(" para ")
+                        .append(((Service) product).getPokemon().getNickname()).append(" = P$ ")
+                        .append(String.format("%.2f", (product.getPrice() * product.getQuantity()))).append("]\n");
             }
         });
         return "\nCompra (" + id + ") " + "Treinador: " + trainer.getName() + "\n" + productDetails + "Total: P$ "

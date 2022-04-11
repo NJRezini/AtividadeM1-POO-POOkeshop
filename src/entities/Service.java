@@ -1,7 +1,6 @@
 package entities;
 
 import org.jetbrains.annotations.NotNull;
-import services.Shop;
 
 public class Service extends Product {
 
@@ -16,11 +15,6 @@ public class Service extends Product {
     public Service(@NotNull Service service, Pokemon pokemon) {
         super(service.getName(), service.getPrice(), service.getRarity());
         this.pokemon = pokemon;
-    }
-
-    public static void registerService(String name, float price, int rarity) {
-        Service service = new Service(name, price, rarity);
-        Shop.getRegisteredServices().add(service);
     }
 
     public Pokemon getPokemon() {

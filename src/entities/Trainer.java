@@ -1,7 +1,7 @@
 package entities;
 
+import org.jetbrains.annotations.NotNull;
 import services.Purchase;
-import services.Shop;
 
 import java.util.ArrayList;
 
@@ -22,10 +22,6 @@ public class Trainer {
         this.badges = badges;
         this.ownedPokemon = new ArrayList<>();
         this.completedPurchases = new ArrayList<>();
-    }
-
-    public static void registerTrainer(String name, int badges) {
-        Shop.getRegisteredTrainers().add(new Trainer(name, badges));
     }
 
     public Integer getId() {
@@ -82,14 +78,14 @@ public class Trainer {
         });
     }
 
-    public void deleteTrainer() {
+    public void deleteTrainer(@NotNull PokemonCollection pokemonCollection, PurchaseCollection purchaseCollection) {
         setDeleted(true);
-        Shop.getRegisteredPokemon().forEach(pokemon -> {
+        pokemonCollection.getRegisteredPokemon().forEach(pokemon -> {
             if (pokemon.getTrainer().getId() == this.id) {
                 pokemon.deletePokemon();
             }
         });
-        Shop.getRegisteredPurchases().forEach(purchase -> {
+        purchaseCollection.getRegisteredPurchases().forEach(purchase -> {
             if (purchase.getTrainer().getId() == this.id) {
                 purchase.deletePurchase();
             }
@@ -98,7 +94,6 @@ public class Trainer {
 
     @Override
     public String toString() {
-        return "Treinador (" + id + ") [Nome: " + name + ", Insígnias: " + badges + "]";
+        return "Treinador (" + this.id + ") [Nome: " + this.name + ", Insígnias: " + this.badges + "]";
     }
-
 }
