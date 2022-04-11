@@ -2,16 +2,14 @@ package entities;
 
 public class Pokemon {
 
-    private static int counter = 1;
     private Integer idPokemon;
     private String nickname;
     private Trainer trainer;
     private Species specie;
     private boolean deleted = false;
 
-    public Pokemon(Species specie, String nickname, Trainer trainer) {
+    public Pokemon(int counter, Species specie, String nickname, Trainer trainer) {
         this.idPokemon = counter;
-        counter++;
         this.nickname = nickname;
         this.trainer = trainer;
         this.specie = specie;

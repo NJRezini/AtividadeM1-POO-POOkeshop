@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ServiceCollection {
 
+    protected static int counter = 1;
     private static final ArrayList<Service> registeredServices = new ArrayList<>();
 
     public ArrayList<Service> getRegisteredServices() {
@@ -20,7 +21,8 @@ public class ServiceCollection {
     }
 
     public void registerService(String name, float price, int rarity) {
-        Service service = new Service(name, price, rarity);
+        Service service = new Service(counter, name, price, rarity);
+        counter++;
         this.getRegisteredServices().add(service);
     }
 

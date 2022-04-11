@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 public class TrainerCollection {
 
+    protected static int counter = 1;
     private static final ArrayList<Trainer> registeredTrainers = new ArrayList<>();
 
     public ArrayList<Trainer> getRegisteredTrainers() {
-        return this.registeredTrainers;
+        return registeredTrainers;
     }
 
     public void registerTrainer(String name, int badges) {
-        this.getRegisteredTrainers().add(new Trainer(name, badges));
+        Trainer trainer = new Trainer(counter, name, badges);
+        counter++;
+        this.getRegisteredTrainers().add(trainer);
     }
 
     public void listTrainers() {

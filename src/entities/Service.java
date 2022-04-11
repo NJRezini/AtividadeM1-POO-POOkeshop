@@ -4,12 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class Service extends Product {
 
-    private static int counter = 1;
     private Pokemon pokemon = null;
 
-    public Service(String name, float price, int rarity) {
+    public Service(int counter, String name, float price, int rarity) {
         super(counter, name, price, rarity);
-        counter++;
     }
 
     public Service(@NotNull Service service, Pokemon pokemon) {

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Trainer {
 
-    private static int counter = 1;
     private int id;
     private String name;
     private Integer badges;
@@ -15,9 +14,8 @@ public class Trainer {
     private ArrayList<Purchase> completedPurchases;
     private boolean deleted = false;
 
-    public Trainer(String name, Integer badges) {
+    public Trainer(int counter, String name, Integer badges) {
         this.id = counter;
-        counter++;
         this.name = name;
         this.badges = badges;
         this.ownedPokemon = new ArrayList<>();

@@ -1,7 +1,8 @@
 package entities;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Species {
-    protected static int counter = 1;
     private final Integer id;
     private Integer pokedexNumber;
     private String name;
@@ -9,18 +10,16 @@ public class Species {
     private String type2;
     private boolean deleted = false;
 
-    public Species(int pokedexNumber, String name, String type1, String type2) {
+    public Species(int counter, int pokedexNumber, String name, @NotNull String type1, @NotNull String type2) {
         this.id = counter;
-        counter++;
         this.pokedexNumber = pokedexNumber;
         this.name = name;
         this.type1 = type1.toUpperCase();
         this.type2 = type2.toUpperCase();
     }
 
-    public Species(int pokedexNumber, String name, String type1) {
+    public Species(int counter, int pokedexNumber, String name, @NotNull String type1) {
         this.id = counter;
-        counter++;
         this.pokedexNumber = pokedexNumber;
         this.name = name;
         this.type1 = type1.toUpperCase();

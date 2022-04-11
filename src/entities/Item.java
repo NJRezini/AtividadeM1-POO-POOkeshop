@@ -3,13 +3,11 @@ package entities;
 import org.jetbrains.annotations.NotNull;
 
 public class Item extends Product {
-
-    private static int counter = 1;
+    
     private int inventory;
 
-    public Item(String name, float price, int rarity, int inventory) {
+    public Item(int counter, String name, float price, int rarity, int inventory) {
         super(counter, name, price, rarity);
-        counter++;
         this.inventory = inventory;
     }
 
